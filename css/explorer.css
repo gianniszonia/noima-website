@@ -126,11 +126,11 @@
 }
 @media (prefers-reduced-motion: reduce) { .explorer, .ex-cap, .ex-note, .ex-panel-in { transition: none; } .ex-loading i::after { animation: none; width: 100%; } }
 
-/* Phones: the four controls under the model are the same size and no taller than they need to be */
+/* Phones: the five controls under the model, each a button of its own: Take apart, Play and Reset view in one row,
+   Front and Back in the row under it */
 @media (max-width: 767px) {
-  .ex-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; } /* two rows of two: Take apart, Play / Front-Back, Reset view */
+  .ex-controls { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; width: 100%; }
+  .ex-controls .btn { grid-column: span 2; min-height: 38px; height: 38px; padding: 0 6px; font-size: 14px; width: 100%; }
+  .ex-controls .ex-view { grid-column: span 3; order: 1; }
   .ex-reset { display: inline-flex; }
-  .ex-controls .btn { min-height: 38px; height: 38px; padding: 0 6px; font-size: 14px; width: 100%; }
-  .ex-controls .ex-seg { display: flex; height: 38px; padding: 2px; width: 100%; }
-  .ex-controls .ex-seg button { flex: 1 1 0; min-height: 0; height: 100%; padding: 0 4px; font-size: 14px; }
 }

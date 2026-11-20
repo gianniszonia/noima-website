@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..600&family=GFS+Neohellenic&display=swap">
 <link rel="stylesheet" href="css/style.css?v=104">
-<link rel="stylesheet" href="css/explorer.css?v=8">
+<link rel="stylesheet" href="css/explorer.css?v=9">
 </head>
 <body class="landing-on">
 
@@ -428,10 +428,8 @@
     <div class="ex-controls">
       <button class="btn btn-sm" type="button" id="exApart">Take apart</button>
       <button class="btn btn-sm ex-toggle" type="button" id="exTurn" aria-pressed="false" aria-label="Play"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5.5v13l11-6.5z"/><path class="i-pause" d="M9 6v12M15 6v12"/></svg><span class="ex-lg">Play</span><span class="ex-sm">Play</span></button>
-      <div class="ex-seg" role="group" aria-label="View">
-        <button type="button" id="exFront">Front</button>
-        <button type="button" id="exBack">Back</button>
-      </div>
+      <button class="btn btn-sm ex-view" type="button" id="exFront">Front</button>
+      <button class="btn btn-sm ex-view" type="button" id="exBack">Back</button>
       <button class="btn btn-sm ex-reset" type="button" id="exReset">Reset view</button>
     </div>
     <label class="ex-time"><span class="label-sm">Time</span><input type="range" id="exTime" min="0" max="1000" value="0" aria-label="Time: 19 years, one turn of the Metonic dial"></label>
