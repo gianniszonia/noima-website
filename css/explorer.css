@@ -125,3 +125,11 @@
   .ex-time { grid-column: 3; grid-row: 1; width: min(100%, 300px); justify-self: end; }
 }
 @media (prefers-reduced-motion: reduce) { .explorer, .ex-cap, .ex-note, .ex-panel-in { transition: none; } .ex-loading i::after { animation: none; width: 100%; } }
+
+/* Phones: the three controls under the model are the same size, in one row, and no taller than they need to be */
+@media (max-width: 767px) {
+  .ex-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; width: 100%; }
+  .ex-controls .btn { min-height: 38px; height: 38px; padding: 0 6px; font-size: 14px; width: 100%; }
+  .ex-controls .ex-seg { display: flex; height: 38px; padding: 2px; width: 100%; }
+  .ex-controls .ex-seg button { flex: 1 1 0; min-height: 0; height: 100%; padding: 0 4px; font-size: 14px; }
+}
