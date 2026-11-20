@@ -54,13 +54,11 @@
     card.setAttribute('role', 'group'); card.setAttribute('aria-label', name);
     // The side that is turned away is out of reach (inert); the "More" and "Back" buttons are the keyboard's way.
     const sync = () => {
-      if (matchMedia('(max-width: 1023px)').matches) { card.classList.remove('on'); front.inert = back.inert = false; front.removeAttribute('aria-hidden'); back.removeAttribute('aria-hidden'); return; }
       const on = card.classList.contains('on');
       card.removeAttribute('tabindex'); front.inert = on; back.inert = !on; front.setAttribute('aria-hidden', on); back.setAttribute('aria-hidden', !on);
     };
-    sync(); matchMedia('(max-width: 1023px)').addEventListener?.('change', sync);
+    sync();
     card.addEventListener('click', (e) => {
-      if (matchMedia('(max-width: 1023px)').matches) return;
       if (String(getSelection())) return; // selecting text, not flipping
       const viaButton = e.target.closest('.card-more');
       card.classList.toggle('on'); sync();
@@ -70,10 +68,9 @@
 
   /* ---------- What we do: a click on a service row opens "What you get" beneath it; another click closes it. The +
      at the end of the row is the same control for the keyboard (its click reaches the row). ---------- */
-  const small = matchMedia('(max-width: 1023px)'); // phones and tablets: everything is shown, nothing opens on a tap
   $$('.service').forEach(card => {
     const btn = $('.svc-more', card); if (!btn) return;
-    card.addEventListener('click', () => { if (small.matches) return; const on = !card.classList.contains('on'); card.classList.toggle('on', on); btn.setAttribute('aria-expanded', on); });
+    card.addEventListener('click', () => { const on = !card.classList.contains('on'); card.classList.toggle('on', on); btn.setAttribute('aria-expanded', on); });
   });
 
   /* ---------- How we work: the track is tied to the scroll position. As the section moves up the window the bronze
@@ -84,10 +81,8 @@
     const paint = (p) => steps.forEach((st, k) => { const x = p * last; st.classList.toggle('lit', p > .02 && x >= k - .001); st.style.setProperty('--f', clamp(x - k, 0, 1).toFixed(3)); });
     if (reduced) { paint(1); return; }
     let queued = false;
-    tl.closest('section').addEventListener('hpin', (e) => paint(clamp(e.detail.p * 1.06 + .05, 0, 1)));
     const update = () => {
       queued = false;
-      if (!row.matches) return; // under 1024 px the sideways scroll drives it (the 'hpin' event)
       const vh = innerHeight, r = tl.getBoundingClientRect();
       // in a row: from the row entering the lower part of the window to its reaching the upper third; stacked: as each step comes up
       paint(clamp((vh * .85 - r.top) / (row.matches ? vh * .38 : r.height * .9), 0, 1)); // in a row: complete just as the section fills the window
@@ -108,38 +103,6 @@
     };
     tabs.forEach((t, k) => t.addEventListener('click', () => pick(k)));
     panels.forEach((p, i) => { p.inert = i !== 0; });
-    // under 1024 px the three parts pass sideways as the page scrolls: the titles only show which one is in view
-    box.closest('section').addEventListener('hpin', (e) => {
-      const k = Math.round(e.detail.p * (tabs.length - 1));
-      tabs.forEach((t, i) => { t.classList.toggle('on', i === k); t.setAttribute('aria-selected', i === k); });
-      panels.forEach((p) => { p.inert = false; });
-    });
-  })();
-
-  /* ---------- Sideways sections (under 1024 px): the section holds still while the page's own scroll moves its parts
-     across the screen. Each [data-hpin] section has one [data-hrow] row; its sideways position follows how far the
-     page has scrolled through the section. Off with reduced motion and from 1024 px. ---------- */
-  (function hpin() {
-    const list = $$('[data-hpin]').map(sec => ({ sec, row: $('[data-hrow]', sec), wrap: $('.wrap', sec) })).filter(o => o.row && o.wrap);
-    if (!list.length || reduced) return;
-    const narrow = matchMedia('(max-width: 1023px)');
-    list.forEach(o => o.sec.style.setProperty('--n', o.row.children.length));
-    let queued = false;
-    const update = () => {
-      queued = false;
-      const vh = innerHeight;
-      list.forEach(o => {
-        if (!narrow.matches) { o.row.style.removeProperty('--tx'); return; }
-        const r = o.sec.getBoundingClientRect(); if (r.bottom < -vh || r.top > vh * 2) return;
-        const p = clamp(-r.top / Math.max(1, r.height - vh), 0, 1);
-        // the row travels until its last part stands where the first one started
-        o.row.style.setProperty('--tx', (-p * o.row.lastElementChild.offsetLeft).toFixed(1) + 'px');
-        o.sec.style.setProperty('--hp', p.toFixed(3));
-        o.sec.dispatchEvent(new CustomEvent('hpin', { detail: { p } }));
-      });
-    };
-    const ask = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
-    addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); narrow.addEventListener?.('change', ask); update();
   })();
 
   /* ---------- The reading line along the top: grows from α (top of the page) to ω (the end) as you scroll ---------- */
@@ -347,15 +310,6 @@
     const n = STAGES.length, k = Math.floor(e.detail.turns * 4);
     showStage(((k % n) + n) % n);
   });
-  // Pause button beside the caption: nothing on the page moves for long without a way to stop it
-  const pauseBtn = $('#mechPause');
-  pauseBtn?.addEventListener('click', () => {
-    const on = pauseBtn.getAttribute('aria-pressed') !== 'true';
-    pauseBtn.setAttribute('aria-pressed', on); pauseBtn.setAttribute('aria-label', on ? 'Let the model turn again' : 'Pause the model');
-    window.NoimaMech?.pauseHero?.(on);
-  });
-  $('#mechReset')?.addEventListener('click', () => window.NoimaMech?.resetHero?.());
-
   /* ---------- Logo in the header and footer: on hover, the symbol turns once, slowly (dial one way, gear the other) ---------- */
   $$('.spin-logo').forEach(a => {
     a.addEventListener('mouseenter', () => { if (!a.classList.contains('spin') && !reduced) a.classList.add('spin'); });
@@ -583,11 +537,11 @@
   const THREE_FILES = [
     'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
     'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js',
-    'js/mechanism.js?v=40'
+    'js/mechanism.js?v=43'
   ];
   // Where the hero has the live model (from 1024 px), open the connections to the two script hosts early, so the
   // files are quick to fetch when the landing ends. Phones make no such connection until the explorer is asked for.
-  if (matchMedia('(min-width: 1024px)').matches) ['https://cdnjs.cloudflare.com', 'https://cdn.jsdelivr.net'].forEach(h => {
+  ['https://cdnjs.cloudflare.com', 'https://cdn.jsdelivr.net'].forEach(h => {
     const l = document.createElement('link'); l.rel = 'preconnect'; l.href = h; l.crossOrigin = 'anonymous'; document.head.appendChild(l);
   });
   let loading3D = false, failed3D = false;
@@ -612,9 +566,9 @@
     const done = () => { document.body.classList.remove('landing-on', 'landing-leaving'); box?.remove(); };
     // The live model is in the hero only from 1024 px; below that the 3D files load when the explorer is opened.
     const wide = matchMedia('(min-width: 1024px)');
-    const hero3D = () => { if (wide.matches) load3D(); };
+    const hero3D = () => load3D(); // the live model is in the hero on every screen
     // fetch the 3D files while the landing plays, so that only building the model is left for the still moment
-    if (wide.matches) THREE_FILES.forEach(src => { const l = document.createElement('link'); l.rel = 'preload'; l.as = 'script'; l.href = src; if (src.startsWith('http')) l.crossOrigin = 'anonymous'; document.head.appendChild(l); });
+    THREE_FILES.forEach(src => { const l = document.createElement('link'); l.rel = 'preload'; l.as = 'script'; l.href = src; if (src.startsWith('http')) l.crossOrigin = 'anonymous'; document.head.appendChild(l); });
     wide.addEventListener?.('change', hero3D);
     if (!svg || reduced) { done(); hero3D(); startPage(); return; }
     const dial = $('.dial', svg), gear = $('.gear', svg);
@@ -710,7 +664,6 @@
       // The logo is finished and still. Build the 3D model now (about half a second to a second of solid work that
       // would make anything moving stutter), and glide to the header as soon as it is ready, so the model is live
       // the moment the homepage appears. Never wait more than 2.5 s; under 1024 px there is no model to wait for.
-      if (!wide.matches) { leave(); return; }
       hero3D();
       const w0 = performance.now();
       (function ready() { if (finished) return; if (window.NoimaMech || failed3D || performance.now() - w0 > 2500) requestAnimationFrame(leave); else setTimeout(ready, 30); })();

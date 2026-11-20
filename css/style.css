@@ -200,6 +200,11 @@ body.menu-open .nav { translate: 0 0; background: var(--navy-950); backdrop-filt
 .nav-end { display: flex; align-items: center; gap: 8px; }
 .nav-cta { display: inline-flex; align-items: center; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 99px; padding: 8px 20px; font-size: 15px; white-space: nowrap; transition: border-color var(--dur-2), background-color var(--dur-2), color var(--dur-2), scale var(--dur-2) var(--ease); }
 .nav-cta:hover { border-color: var(--bronze); scale: 1.05; }
+/* under 1024 px the Contact pill is lower, to sit level with the two-line menu button; its tap area stays 44 px tall */
+@media (max-width: 1023px) {
+  .nav-cta { position: relative; min-height: 34px; padding: 5px 16px; font-size: 14px; }
+  .nav-cta::after { content: ""; position: absolute; inset: -5px 0; }
+}
 .cta-l { display: none; }
 .menu-btn { position: relative; width: 44px; height: 44px; margin-right: -10px; border-radius: 50%; }
 .menu-btn span { position: absolute; left: 12px; width: 20px; height: 1.5px; background: currentColor; border-radius: 2px; transition: transform var(--dur-2) var(--ease), top var(--dur-2) var(--ease); }
@@ -229,54 +234,51 @@ body.menu-open .nav { translate: 0 0; background: var(--navy-950); backdrop-filt
 
 /* ---------- Hero ---------- */
 .hero { padding: 0; min-height: 100svh; display: flex; overflow: hidden; }
-.hero-grid { position: relative; display: grid; align-content: end; padding-top: 96px; padding-bottom: 56px; }
+.hero-grid { position: relative; display: grid; align-content: center; row-gap: 20px; padding-top: 76px; padding-bottom: 40px; }
 .hero-def { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 20px; }
 .hd-word { font-family: 'GFS Neohellenic', Georgia, serif; font-size: clamp(26px, 2.2vw, 34px); line-height: 1; color: var(--bronze); }
 .hd-mean { color: var(--text-2); font-size: var(--fs-small); }
 .hero h1 { font-size: var(--fs-display); line-height: 1.02; letter-spacing: -.03em; }
 .hero-sub { margin-top: 24px; color: var(--text-2); max-width: 44ch; font-size: var(--fs-lead); line-height: 1.5; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px 12px; margin-top: 32px; }
-.hero-stage { display: none; }
-/* Under 1024 px: a faint still image of the mechanism behind the words, under a navy scrim */
-.hero-bg { position: absolute; inset: 0; pointer-events: none; }
-/* (inside a media query, so wider screens never download the image) */
+/* The live 3D model is in the hero on every screen (Giannis, 20 Nov 2026). On phones it sits above the words; from
+   768 px it sits beside them. It works the same everywhere. If the 3D cannot run at all, .mech-fallback shows. */
+.hero-bg { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(70% 30% at 50% 28%, rgba(16, 42, 78, .9) 0%, rgba(8, 24, 46, 0) 100%); }
+.hero-stage { order: -1; position: relative; display: grid; justify-items: center; gap: 10px; min-width: 0; opacity: 0; transition: opacity var(--dur-5) var(--ease) .2s; }
+.started .hero-stage, .hero.no-gl .hero-stage { opacity: 1; }
+.mech-title { display: none; font-size: var(--fs-label); letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); text-align: center; }
+.mech-box { position: relative; width: 100%; height: clamp(200px, 34svh, 340px); }
+#mech { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity var(--dur-5) var(--ease); }
+.mech-on #mech { opacity: 1; }
+.mech-fallback { display: none; position: absolute; inset: 12%; width: 76%; height: 76%; object-fit: contain; }
+.hero.no-gl .mech-fallback { display: block; }
+.hero.no-gl #mech, .hero.no-gl .mech-cap, .hero.no-gl .mech-title { display: none; }
+.mech-cap { display: grid; justify-items: center; gap: 14px; width: 100%; }
+.mech-stage { display: flex; justify-content: center; align-items: baseline; gap: 10px; white-space: nowrap; font-size: 14px; }
+/* The model can be turned on every screen: a sideways drag rotates it, an up-and-down swipe still scrolls the page.
+   There are no buttons: it always turns, and about a second after you let go it glides back to its starting view. */
+#mech { cursor: grab; touch-action: pan-y; }
+#mech.dragging { cursor: grabbing; }
+/* The hero says less as the screen gets smaller: under 1024 px the definition drops the pronunciation and the sentence
+   is the short one. */
+.hs-short { display: none; }
 @media (max-width: 1023px) {
-  .hero-bg::before { content: ""; position: absolute; right: -22%; top: 56px; width: 118%; aspect-ratio: 1; max-width: 620px; background: url(../assets/mechanism-still.png) center / contain no-repeat; background-image: image-set(url(../assets/mechanism-still.webp) type("image/webp"), url(../assets/mechanism-still.png) type("image/png")); opacity: .3; }
-  .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, #08182E 0%, rgba(8, 24, 46, .92) 34%, rgba(8, 24, 46, .6) 62%, rgba(8, 24, 46, .2) 100%); }
+  .hd-long, .hs-long { display: none; }
+  .hs-short { display: inline; }
 }
 @media (min-width: 768px) {
-  .hero-grid { align-content: center; padding-bottom: 72px; }
-  .hero-copy { max-width: 55%; } /* the words stop short of the picture of the mechanism */
-  .hero-bg::before { right: -4%; top: 50%; translate: 0 -50%; width: 50%; max-width: 520px; opacity: .8; } /* beside the words here, not behind them, so it can be much clearer */
-  .hero-bg::after { background: linear-gradient(to right, #08182E 0%, rgba(8, 24, 46, .9) 40%, rgba(8, 24, 46, .12) 60%, rgba(8, 24, 46, 0) 100%); }
+  .hero-bg { background: radial-gradient(42% 52% at 76% 50%, rgba(16, 42, 78, .9) 0%, rgba(8, 24, 46, 0) 100%); }
+  .hero-grid { grid-template-columns: repeat(12, 1fr); column-gap: var(--gap); align-content: stretch; align-items: center; padding-top: 72px; padding-bottom: 0; }
+  .hero-copy { grid-column: 1 / span 7; }
+  .hero-stage { order: 0; grid-column: 8 / span 5; gap: 20px; }
+  .mech-title { display: block; }
+  .mech-box { height: clamp(300px, 46svh, 540px); }
+  .mech-stage { font-size: 15px; }
 }
 @media (min-width: 1024px) {
   .hero { min-height: 640px; height: 100svh; }
-  /* a slightly lifted field behind the model, so the bronze has something to sit on */
-  .hero-bg { background: radial-gradient(42% 52% at 76% 50%, rgba(16, 42, 78, .9) 0%, rgba(8, 24, 46, 0) 100%); }
-  .hero-grid { grid-template-columns: repeat(12, 1fr); column-gap: var(--gap); align-content: stretch; align-items: center; padding-top: 72px; padding-bottom: 0; }
-  .hero-copy { grid-column: 1 / span 7; max-width: none; }
-  .hero-stage { grid-column: 8 / span 5; display: grid; justify-items: center; gap: 20px; min-width: 0; opacity: 0; transition: opacity var(--dur-5) var(--ease) .2s; }
-  .started .hero-stage, .hero.no-gl .hero-stage { opacity: 1; }
-  /* no still image stands in for the model: it showed for a split second before the live model and read as a flicker.
-     The model is built during the landing, so it is simply there; if the 3D cannot run at all, .mech-fallback shows. */
-  #mech { opacity: 0; transition: opacity var(--dur-5) var(--ease); }
-  .mech-on #mech { opacity: 1; }
-  .mech-title { font-size: var(--fs-label); letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); text-align: center; }
-  .mech-box { position: relative; width: 100%; height: clamp(320px, 58vh, 540px); }
-  #mech { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
-  #mech.dragging { cursor: grabbing; }
-  .mech-fallback { display: none; position: absolute; inset: 12%; width: 76%; height: 76%; object-fit: contain; }
-  .hero.no-gl .mech-fallback { display: block; }
-  .hero.no-gl #mech, .hero.no-gl .mech-cap, .hero.no-gl .mech-title { display: none; }
-  .mech-cap { display: grid; justify-items: center; gap: 14px; width: 100%; } /* the caption, then the two buttons, both centred under the model */
-  /* the two buttons sit beside the model, one above the other, halfway up it */
-  .hero-stage { position: relative; }
-  .mech-btns { position: absolute; z-index: 2; right: clamp(0px, 5%, 36px); top: 50%; translate: 0 -50%; display: flex; flex-direction: column; gap: 10px; }
-  .mech-btns .icon-btn { width: 36px; height: 36px; border-color: var(--silver-500); color: var(--fg); background: none; }
-  .mech-btns .icon-btn:hover { border-color: var(--bronze); scale: 1.1; }
-  .mech-btns .icon-btn svg { width: 18px; height: 18px; stroke-width: 1.75; }
-  .mech-stage { display: flex; justify-content: center; align-items: baseline; gap: 10px; min-width: 250px; white-space: nowrap; font-size: 15px; }
+  .mech-box { height: clamp(320px, 58vh, 540px); }
+  .mech-stage { min-width: 250px; }
 }
 .ms-n { color: var(--bronze); font-variant-numeric: tabular-nums; }
 .ms-n, .ms-t { display: inline-block; transition: opacity var(--dur-3) var(--ease), translate var(--dur-3) var(--ease); }
@@ -570,84 +572,10 @@ footer a:hover { color: var(--fg); }
 .legal p { color: var(--text-2); margin-bottom: 14px; max-width: 62ch; }
 .legal a { text-decoration: underline; text-decoration-color: var(--bronze); text-underline-offset: 4px; }
 
-/* ================= Phones and tablets (under 1024 px) =================
-   People scroll on a phone; they do not hunt for things to tap (Giannis, 20 Nov 2026). So everything is shown, and the
-   only things to tap are real buttons and links. Three sections move sideways as the page is scrolled (see below). */
+/* Phones: the same page as on desktop (rows open on a tap, founder cards turn on their + button, the three name parts
+   are chosen by a tap). Only the buttons differ: as wide as their words, and a little smaller. */
 @media (max-width: 479px) {
-  .btn { min-height: 44px; padding: 10px 20px; font-size: 15px; } /* buttons as wide as their words, not the screen */
-}
-@media (max-width: 1023px) {
-  /* What we do: each service shows its "What you get" list; no + */
-  .service { grid-template-columns: 40px minmax(0, 1fr); cursor: default; }
-  .service::before { display: none; }
-  .svc-more { display: none; }
-  .svc-list { max-height: none; overflow: visible; opacity: 1; visibility: visible; padding-top: 20px; }
-  /* Why work with us, Common questions: every answer is open; no + */
-  .faq-q { min-height: 0; padding: 18px 0 6px; pointer-events: none; }
-  .faq-q i { display: none; }
-  .faq::before { display: none; }
-  .faq-a { grid-template-rows: 1fr; }
-  .faq-a > div { visibility: visible; }
-  .faq-a p { padding-bottom: 20px; }
-  /* Founders: one outlined card each, both sides shown one under the other; nothing turns */
-  .person { border: 1px solid var(--line-strong); border-radius: 20px; cursor: default; perspective: none; }
-  .person .fl { display: block; transform: none !important; }
-  .person .face { border: 0; border-radius: 0; padding-bottom: var(--pad); backface-visibility: visible; -webkit-backface-visibility: visible; }
-  .person .back { transform: none; padding-top: 0; }
-  .person .back .person-k { padding-top: 20px; border-top: 1px solid var(--line); }
-  .person .card-more { display: none; }
-  /* The symbol: its four meanings are written out under it, two by two; nothing to tap */
-  .sym-fig { width: 132px; }
-  .sym-row { align-content: start; min-height: 0; padding: 10px 12px; border-color: var(--line); }
-  .sr-d { display: block; font-size: 14px; line-height: 1.4; }
-  .sym-panel { display: none; }
-}
-/* Sideways sections (What we do, How we work, Our name and symbol): the section stays in place for a moment while the
-   normal up-and-down scroll moves its parts across the screen, one after another. With reduced motion they stay
-   stacked, as plain lists. */
-@media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
-  [data-hpin] { padding-block: 0; height: calc(100svh + (var(--n, 3) - 1) * 70vh); }
-  [data-hpin] > .wrap { position: sticky; top: 0; height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding-top: 56px; }
-  [data-hpin] .opener { margin-bottom: 20px; }
-  [data-hpin] .section-lead { display: none; }
-  [data-hrow] { display: flex; gap: 0; width: max-content; transform: translate3d(var(--tx, 0px), 0, 0); will-change: transform; }
-  [data-hrow] > * { flex: none; width: min(80vw, 440px); margin-right: 28px; }
-  [data-hrow] > :last-child { margin-right: 0; }
-  /* how far along: a thin bronze line under the section's heading */
-  [data-hpin] .opener::after { content: ""; display: block; height: 1px; margin-top: 20px; background: linear-gradient(90deg, var(--bronze) calc(var(--hp, 0) * 100%), var(--line) calc(var(--hp, 0) * 100%)); }
-  .services { border: 0; }
-  .service { padding: 20px 0 0; align-content: start; }
-  .track { padding-left: 0; padding-top: 72px; }
-  .tstep:not(:last-child)::before, .tstep:not(:last-child)::after { left: 20px; top: -52px; width: calc(100% + 28px); height: 1px; }
-  .tstep:not(:last-child)::after { transform: scaleX(var(--f, 0)); transform-origin: left; }
-  .tdot { left: 0; top: -72px; }
-  .ns { display: block; }
-  .ns-tabs { margin-bottom: 24px; }
-  .ns-tab { pointer-events: none; }
-  .ns-panel, .ns-panel:not(.on) { display: block; visibility: visible; animation: none; }
-}
-
-/* short phones: the sideways sections must fit one screen, so they are set a little tighter */
-@media (max-width: 1023px) and (max-height: 760px) and (prefers-reduced-motion: no-preference) {
-  [data-hpin] > .wrap { justify-content: flex-start; padding-top: 68px; }
-  [data-hpin] .label { display: none; }
-  [data-hpin] h2 { font-size: 25px; }
-  [data-hpin] .opener { margin-bottom: 12px; }
-  [data-hpin] .opener::after { margin-top: 12px; }
-  .service { padding-top: 12px; row-gap: 8px; }
-  .service h3 { font-size: 24px; }
-  .svc-lead { font-size: 17px; margin-bottom: 6px; }
-  .svc-desc, .ticks li { font-size: 15px; line-height: 1.4; }
-  .svc-list { padding-top: 12px; }
-  .ticks-k { margin-bottom: 8px; }
-  .ticks { gap: 5px; }
-  .ns-tabs { margin-bottom: 12px; }
-  .ns-tab { min-height: 44px; padding: 6px 0; font-size: 17px; }
-  .sym-fig { width: 96px; margin-bottom: 4px; }
-  .sym { gap: 8px; }
-  .sym-row { padding: 8px 10px; }
-  .sr-d { font-size: 13px; line-height: 1.35; }
-  .greek { font-size: 48px; }
+  .btn { min-height: 44px; padding: 10px 20px; font-size: 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

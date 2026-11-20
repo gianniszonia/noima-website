@@ -23,7 +23,7 @@
   const box = heroCanvas.parentElement; // #mechBox: its client size is the hero renderer's size
   const heroSection = heroCanvas.closest('.hero') || box;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mqHero = matchMedia('(min-width: 1024px)'); // below this the hero shows a still image, no WebGL
+  const mqHero = matchMedia('(min-width: 1024px)'); // below this the hero model cannot be dragged, and textures are lighter
   const LOW = !mqHero.matches || (navigator.deviceMemory && navigator.deviceMemory <= 4); // lighter textures and shadows
   const noop = { intro() {}, setTheme() {}, openExplorer() {}, pauseHero() {}, still() { return ''; } };
   const fallback = () => { heroSection.classList.add('no-gl'); window.NoimaMech = noop; document.querySelectorAll('[data-explore]').forEach(b => { b.hidden = true; }); };
@@ -635,7 +635,7 @@
   let zoom = 1, zoomTarget = 1, resetting = false, dragging = false, lastX = 0, lastY = 0, lastT = 0, pinch = null;
   const pts = new Map();
   const ZMAX = 1.6, zclamp = (z) => Math.min(ZMAX, Math.max(1, z)); // zooming in may crop the model at the box's edge
-  const heroActive = () => mqHero.matches && heroOnScreen && !document.hidden && box.clientWidth > 0 && box.clientHeight > 0;
+  const heroActive = () => heroOnScreen && !document.hidden && box.clientWidth > 0 && box.clientHeight > 0;
   function heroLayout() {
     const w = box.clientWidth, h = box.clientHeight;
     if (!(w > 0 && h > 0)) return false; // hidden under 1024 px: never render to a zero-size box
@@ -646,10 +646,14 @@
   heroCanvas.addEventListener('wheel', (e) => {
     if (mode === 'explorer') { e.preventDefault(); exZoom = zx(exZoom * Math.exp(-e.deltaY * .0016)); exGesture(); return; }
     if (!(e.ctrlKey || e.metaKey)) return; // a plain wheel keeps scrolling the page
-    e.preventDefault(); resetting = false; zoomTarget = zclamp(zoomTarget * Math.exp(-e.deltaY * .0025)); dirty = true;
+    e.preventDefault(); resetting = false; zoomTarget = zclamp(zoomTarget * Math.exp(-e.deltaY * .0025)); dirty = true; backSoon();
   }, { passive: false });
   heroCanvas.addEventListener('dblclick', () => { if (mode === 'hero') { resetting = true; heroSpin.x = heroSpin.y = 0; zoomTarget = 1; dirty = true; } else exResetView(); });
+  // About a second after the visitor lets go, the model glides back to its starting view (there is no reset button).
+  let backTimer = 0;
+  const backSoon = () => { clearTimeout(backTimer); backTimer = setTimeout(() => { if (mode !== 'hero' || dragging || pinch) return; resetting = true; heroSpin.x = heroSpin.y = 0; zoomTarget = 1; dirty = true; run(); }, 1000); };
   function heroDown(e) {
+    clearTimeout(backTimer);
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pts.size >= 2) { // two fingers: pinch to zoom, no rotating
       const [a, b] = [...pts.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, z: zoomTarget };
@@ -671,6 +675,7 @@
   }
   function heroUp(e) {
     pts.delete(e.pointerId); if (pts.size < 2) pinch = null;
+    if (pts.size === 0) backSoon();
     if (!dragging) return; dragging = false; heroCanvas.classList.remove('dragging'); if (performance.now() - lastT > 90) heroSpin.x = heroSpin.y = 0;
   }
   const easeOut = (t) => 1 - Math.pow(1 - t, 4);
