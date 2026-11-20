@@ -28,7 +28,7 @@
   --line-strong: rgba(255, 255, 255, .4);   /* outlines of buttons and controls */
   /* Section tints. The stars sit behind the page, so sections are tinted, not painted: these give #0C2140 and
      #0E2546 over the navy while the stars still show through. */
-  --tint-foot: rgba(1, 6, 16, .36);   /* over the navy this gives about #051225: the call to action and the footer (.5 was too dark, .24 too light) */
+  --tint-foot: rgba(1, 6, 16, .36);   /* over the navy this gives about #051225: the call to action and the footer (.5 and .58 were too dark on desktop, .24 too light) */
   /* Motion */
   --ease: cubic-bezier(.22, .61, .2, 1);
   --ease-io: cubic-bezier(.65, 0, .35, 1);
@@ -115,6 +115,9 @@ main > section:not(.hero):not(.contact):nth-of-type(odd)::after { background: ra
 /* it comes in gradually: the navy deepens over the first 40% of the section, and there is no dividing line above it */
 main > section.contact { background: linear-gradient(to bottom, rgba(1, 6, 16, 0) 0%, var(--tint-foot) min(40%, 420px)); }
 main > section.contact::before { display: none; }
+/* on phones the fade is short (120 px), so the navy above and the darker blue below are in view together; a long fade
+   fills the small screen and the change goes unnoticed */
+@media (max-width: 767px) { main > section.contact { background: linear-gradient(to bottom, rgba(1, 6, 16, 0) 0, var(--tint-foot) 120px); } }
 
 
 
