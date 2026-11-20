@@ -935,7 +935,7 @@
     if (now !== undefined && now - capAt < 100) return; capAt = now || 0;
     let key, html;
     if (exMode === 'noima') {
-      const n = STAGES.length, i = ((Math.floor(exCrank / TAU * 2) % n) + n) % n; key = 'n' + i; // a new step every half turn (3 s)
+      const n = STAGES.length, i = ((Math.floor(exCrank / TAU * 3) % n) + n) % n; key = 'n' + i; /* NÓIMA mode: a new step every third of a turn (2 s) */
       html = () => {
         const num = String(i + 1).padStart(2, '0'), oa = el.cap.querySelector('.ms-n'), ob = el.cap.querySelector('.ms-t');
         if (oa && ob && !reduced) { // the number and the text fade and lift away, then the new ones settle in

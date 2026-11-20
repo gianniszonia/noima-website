@@ -320,8 +320,8 @@
   }
   addEventListener('noima:turn', (e) => {
     if (!document.getElementById('explorer').hidden) return; // the explorer has its own caption
-    // a crank turn takes 12 s on the homepage: a new step every quarter of a turn (3 s), looping
-    const n = STAGES.length, k = Math.floor(e.detail.turns * 4);
+    // a crank turn takes 12 s on the homepage: a new step every sixth of a turn (2 s), looping
+    const n = STAGES.length, k = Math.floor(e.detail.turns * 6);
     showStage(((k % n) + n) % n);
   });
   /* ---------- Logo in the header and footer: on hover, the symbol turns once, slowly (dial one way, gear the other) ---------- */
@@ -551,7 +551,7 @@
   const THREE_FILES = [
     'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
     'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js',
-    'js/mechanism.js?v=45'
+    'js/mechanism.js?v=46'
   ];
   // Where the hero has the live model (from 1024 px), open the connections to the two script hosts early, so the
   // files are quick to fetch when the landing ends. Phones make no such connection until the explorer is asked for.
