@@ -1,0 +1,127 @@
+/* NÓIMA website: the full-screen mechanism explorer (markup between the EXPLORER markers in index.html, behaviour in
+   js/mechanism.js). Built phone first: a 56 px top bar, the stage, a bottom sheet. Nothing overlaps the controls:
+   the three are rows of one grid, and the model is fitted to whatever the stage gets.
+   Uses the tokens defined at the top of style.css. Palette: navy, bronze, silver, white only. */
+.explorer { position: fixed; inset: 0; z-index: 150; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--navy-950, #050F1F); color: var(--fg, #fff); opacity: 0; transition: opacity var(--dur-3, 320ms) var(--ease, ease); }
+.explorer.open { opacity: 1; }
+.explorer[hidden] { display: none; }
+
+/* ----- Top bar: title (from 768), the reading switch, parts list and close ----- */
+.ex-top { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 6px 12px; padding-top: max(6px, env(safe-area-inset-top)); padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); border-bottom: 1px solid var(--line); }
+.ex-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ex-top-end { display: flex; gap: 8px; margin-left: auto; flex: none; }
+.ex-ib { width: 44px; height: 44px; flex: none; }
+.ex-ib[aria-expanded="true"] { border-color: var(--bronze); color: var(--bronze); }
+
+/* The switch: two segments. The chosen one is filled with the bronze wash and carries a dot, so colour is not the only cue. */
+.ex-mode, .ex-seg { display: inline-flex; flex: none; border: 1px solid var(--line-strong); border-radius: 99px; padding: 3px; }
+.ex-mode button, .ex-seg button { position: relative; min-height: 36px; padding: 6px 14px; border-radius: 99px; font-size: 15px; color: var(--text-2); white-space: nowrap; transition: background-color var(--dur-2), color var(--dur-2); }
+/* the segments look 36 px tall; their touch area is the full 44 px of the switch */
+.ex-mode button::after, .ex-seg button::after { content: ""; position: absolute; inset: -4px 0; }
+.ex-mode button:hover, .ex-seg button:hover { color: var(--fg); }
+.ex-mode button[aria-checked="true"] { background: var(--bronze-wash); color: var(--fg); }
+.ex-mode button::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; border: 1px solid var(--text-3); vertical-align: 2px; transition: background-color var(--dur-2), border-color var(--dur-2); }
+.ex-mode button[aria-checked="true"]::before { background: var(--bronze); border-color: var(--bronze); }
+.ex-mode button:focus-visible, .ex-seg button:focus-visible { border-radius: 99px; }
+
+/* ----- Stage ----- */
+.ex-stage { position: relative; min-height: 0; overflow: hidden; }
+#exStage #mech { position: absolute; inset: 0; display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; outline-offset: -3px; }
+#exStage #mech.dragging { cursor: grabbing; }
+.ex-note { position: absolute; top: 10px; left: 16px; right: 16px; margin: 0 auto; max-width: 52ch; text-align: center; font-size: 13px; line-height: 1.4; color: var(--text-3); pointer-events: none; transition: opacity var(--dur-2); }
+.ex-hint { position: absolute; left: 16px; right: 16px; bottom: 10px; text-align: center; font-size: 13px; color: var(--text-3); pointer-events: none; transition: opacity var(--dur-4) var(--ease); }
+.ex-hint.gone { opacity: 0; }
+.ex-note.swap, .ex-cap.swap, .ex-panel.swap .ex-panel-in { opacity: 0; }
+
+/* Loading: shown from the moment the explorer is asked for until the model has drawn its first frame */
+.ex-loading { position: absolute; inset: 0; display: none; place-content: center; justify-items: center; gap: 14px; background: var(--navy-950, #050F1F) url(../assets/mechanism-still.png) center / auto min(70%, 520px) no-repeat; background-image: image-set(url(../assets/mechanism-still.webp) type("image/webp"), url(../assets/mechanism-still.png) type("image/png")); font-size: 15px; color: var(--text-2); z-index: 3; }
+.explorer.is-loading .ex-loading { display: grid; }
+.ex-loading span { padding: 6px 14px; border-radius: 99px; background: rgba(5, 15, 31, .8); }
+.ex-loading i { display: block; width: 160px; height: 2px; background: var(--line); overflow: hidden; position: relative; }
+.ex-loading i::after { content: ""; position: absolute; inset: 0; width: 40%; background: var(--bronze); animation: ex-load 1.2s var(--ease-io, ease-in-out) infinite alternate; }
+@keyframes ex-load { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+
+/* Hover name (mouse only) */
+.ex-tip { position: absolute; left: 0; top: 0; z-index: 2; max-width: 260px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--navy-600); font-size: 14px; line-height: 1.3; pointer-events: none; }
+.ex-tip[hidden] { display: none; }
+
+/* Part panel: on phones a card at the foot of the stage, just above the sheet; from 1024 a card on the right */
+.ex-panel { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; max-height: 48%; overflow: auto; padding: 16px 56px 16px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--navy-600); box-shadow: 0 12px 40px rgba(0, 0, 0, .35); }
+.ex-panel[hidden] { display: none; }
+.ex-panel-in { transition: opacity var(--dur-2) var(--ease); }
+.ex-panel .label-sm { color: var(--bronze); }
+.ex-panel h2 { margin: 6px 0 8px; font-size: 20px; line-height: 1.2; letter-spacing: -.01em; font-weight: 500; }
+.ex-panel-text { font-size: 15px; line-height: 1.5; color: var(--text-2); }
+.ex-panel-link { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14px; color: var(--fg); }
+.ex-panel-why { margin-top: 4px; font-size: 14px; line-height: 1.45; color: var(--text-3); }
+.ex-panel-close { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; border-color: transparent; }
+
+/* Parts list: every part as a real button, grouped; the keyboard's way to each description */
+.ex-parts { position: absolute; inset: 0; z-index: 4; overflow: auto; overscroll-behavior: contain; background: var(--navy-950, #050F1F); }
+.ex-parts[hidden] { display: none; }
+.ex-parts-in { padding: 16px 16px 24px; max-width: 560px; margin: 0 auto; }
+.ex-parts h3 { margin: 18px 0 8px; color: var(--bronze); font-weight: 400; }
+.ex-parts h3:first-child { margin-top: 0; }
+.ex-parts ul { list-style: none; margin: 0; padding: 0; }
+.ex-part { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 8px 12px; border-radius: 10px; text-align: left; font-size: 15px; line-height: 1.3; color: var(--text-2); transition: background-color var(--dur-1), color var(--dur-1); }
+.ex-part::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--text-3); }
+.ex-part:hover { background: rgba(255, 255, 255, .06); color: var(--fg); }
+.ex-part[aria-current="true"] { background: var(--bronze-wash); color: var(--fg); }
+.ex-part[aria-current="true"]::before { background: var(--bronze); border-color: var(--bronze); }
+
+/* ----- Bottom sheet: caption, controls, time ----- */
+.ex-sheet { display: grid; gap: 12px; padding: 12px 16px; padding-bottom: max(14px, env(safe-area-inset-bottom)); padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); border-top: 1px solid var(--line); background: var(--navy-950, #050F1F); }
+.ex-cap { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 2px 10px; min-height: 22px; font-size: 15px; line-height: 1.4; text-align: center; transition: opacity var(--dur-2) var(--ease); }
+.explorer[data-mode="edu"] .ex-cap { min-height: 44px; align-content: center; } /* room for two lines, so the stage never changes size as the readout changes */
+.ex-cap .rd { white-space: nowrap; color: var(--text-2); }
+.ex-cap .rd + .rd::before { content: "·"; margin-right: 10px; color: var(--text-3); }
+.ex-cap .rd-date { color: var(--fg); }
+.ex-cap .rd-ecl.on { color: var(--bronze-hi, #E0BE8E); }
+.ex-cap .rd-ecl.on::after { content: ""; display: inline-block; width: 8px; height: 8px; margin-left: 7px; border-radius: 50%; background: var(--bronze); box-shadow: 4px 0 0 -1px var(--navy-950, #050F1F), 4px 0 0 0 var(--bronze); }
+.ex-cap .rd-cyc { display: none; color: var(--text-3); }
+.ex-controls { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; }
+.ex-controls .btn { min-height: 44px; padding-inline: 13px; }
+.ex-seg button { padding-inline: 12px; }
+.ex-toggle .ico { width: 16px; height: 16px; }
+.ex-toggle .i-play { fill: currentColor; stroke: none; }
+.ex-toggle .i-pause { display: none; }
+.ex-toggle[aria-pressed="true"] { border-color: var(--bronze); }
+.ex-toggle[aria-pressed="true"] .i-play { display: none; }
+.ex-toggle[aria-pressed="true"] .i-pause { display: block; }
+.ex-lg, .ex-reset { display: none; }
+.ex-time { display: flex; align-items: center; gap: 12px; min-height: 44px; }
+.ex-time input { flex: 1; min-width: 0; height: 44px; margin: 0; accent-color: var(--bronze); background: transparent; }
+
+@media (min-width: 480px) { .ex-lg { display: inline; } .ex-sm { display: none; } }
+@media (min-width: 768px) {
+  .ex-top { padding-inline: 24px; gap: 20px; }
+  .ex-title { position: static; width: auto; height: auto; overflow: visible; clip-path: none; font-size: var(--fs-label, 13px); letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); }
+  .ex-mode { margin-left: auto; }
+  .ex-top-end { margin-left: 0; }
+  .ex-reset { display: inline-flex; }
+  .ex-controls { gap: 8px; }
+  .ex-controls .btn { padding-inline: 16px; }
+  .ex-seg button { padding-inline: 14px; }
+  .ex-cap .rd-cyc { display: inline; }
+  .ex-panel { left: auto; right: 20px; bottom: 20px; width: 360px; max-height: calc(100% - 40px); }
+  .ex-sheet { padding-inline: 24px; }
+}
+@media (min-width: 1024px) {
+  /* caption on its own row; controls on the left and time on the right of the next. A grid, so they cannot overlap */
+  .ex-sheet { grid-template-columns: auto minmax(200px, 1fr); align-items: center; gap: 12px 24px; padding-block: 12px 14px; }
+  .ex-cap { grid-column: 1 / -1; }
+  .ex-controls { grid-column: 1; justify-content: flex-start; flex-wrap: nowrap; }
+  .ex-time { grid-column: 2; justify-self: end; width: min(100%, 360px); }
+  .ex-panel { top: 20px; bottom: auto; }
+  .ex-parts { inset: 0 auto 0 0; width: 300px; border-right: 1px solid var(--line); background: rgba(8, 24, 46, .96); }
+  .ex-parts-in { padding: 20px 16px 28px; }
+}
+@media (min-width: 1280px) {
+  /* one row: controls, caption in the middle, time */
+  /* equal side columns, so the caption sits exactly under the model */
+  .ex-sheet { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 20px; padding-block: 14px; }
+  .ex-cap { grid-column: 2; grid-row: 1; }
+  .ex-controls { grid-row: 1; justify-self: start; }
+  .ex-time { grid-column: 3; grid-row: 1; width: min(100%, 300px); justify-self: end; }
+}
+@media (prefers-reduced-motion: reduce) { .explorer, .ex-cap, .ex-note, .ex-panel-in { transition: none; } .ex-loading i::after { animation: none; width: 100%; } }

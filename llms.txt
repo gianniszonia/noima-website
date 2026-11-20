@@ -1,0 +1,46 @@
+# NÓIMA
+
+> NÓIMA is a data engineering, analytics and automation consultancy run by its two founders, George Stratis (London) and Giannis Zonia (Nicosia). It takes on work for businesses in Cyprus, the United Kingdom and elsewhere, and both founders work in English and Greek. The name is the Greek word νόημα: "sense", "meaning".
+
+Website: https://noimadata.com/
+Contact: noimadata@gmail.com
+
+## What NÓIMA does
+
+- **Data engineering:** All your data in one place. We connect your systems, clean the data and keep it in one warehouse that every report and dashboard reads, refreshed on a schedule. What you get: pipelines from each of your systems; data cleaned and checked on arrival; one warehouse for every report; systems connected to each other.
+- **Analytics:** Clear dashboards and analysis. We turn your data into dashboards and analysis that show how the business is doing and what is behind each figure. What you get: dashboards for each team; KPIs with one agreed definition; analysis on the questions you ask; views your team can filter themselves.
+- **Automation:** Repeated work, automated. We automate the tasks you repeat: generating reports, sending invoices and emails, running the same analysis each week. What you get: reports generated and sent for you; invoices sent on schedule; alerts when a number moves; AI on the steps where it saves time.
+
+A client can start with one service and add the next later.
+
+## Who it is for
+
+Businesses that have data, organised or not, and want insight from it, or want to automate work they now do by hand: sending invoices, building reports, running an analysis, sending emails.
+
+## How a project runs
+
+1. Listen: the client walks through the reports they rely on and the questions those reports cannot answer.
+2. Map: NÓIMA goes through the systems and spreadsheets and says what the data can support today.
+3. Build: short rounds, each ending with something the client can open and check.
+4. Automate: whatever is still done by hand each week goes on a schedule, with an alert when it fails.
+
+The two founders do the work themselves. They work with the tools a client already has, and everything built stays with the client.
+
+## How to start
+
+Email noimadata@gmail.com to arrange a meeting, with a line or two on what you want to fix.
+
+## Founders
+
+- George Stratis, co-founder, data engineering: data platforms, pipelines and data quality. MSc Operations Research & Analytics (LSE), BSc Mathematics & Statistics (University of Reading).
+- Giannis Zonia, co-founder, analytics: dashboards, BI, analytics products and AI; a Tableau specialist. MSc Business Analytics, Distinction (Queen Mary University of London), BSc Information Technology (University of Reading).
+
+Together they have 15 years of experience in data.
+
+## Tools
+
+PostgreSQL, Snowflake, BigQuery, Databricks, Python, dbt, Airflow, AWS, Tableau, Looker, pandas, Google Sheets, n8n, Zapier, Claude, ChatGPT.
+
+## The name and the symbol
+
+The logo shows the main wheel of the Antikythera mechanism, a Greek geared device more than 2,000 years old: the first analogue computer. It turned centuries of recorded observations of the sky into predictions read off a dial. It found the meaning in the movements of the sky; NÓIMA finds it in a business's data. The website includes a 3D model of the mechanism to explore.

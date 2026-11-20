@@ -5,34 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy · NÓIMA</title>
 <meta name="theme-color" content="#08182E">
-<script>(function(){var t;try{t=sessionStorage.getItem('noima-theme')}catch(e){}if(t!=='light')t='dark';document.documentElement.dataset.theme=t;})();</script>
+<script>(function(){var t;/* light mode paused */if(t!=='light')t='dark';document.documentElement.dataset.theme=t;})();</script>
 <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/brand/favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..600&display=swap">
-<link rel="stylesheet" href="css/style.css?v=39">
-<style>
-  .legal { padding-top: 160px; max-width: 760px; }
-  .legal h1 { font-size: clamp(48px, 8vw, 110px); margin-bottom: 40px; }
-  .legal h2 { font-size: clamp(24px, 2.4vw, 34px); margin: 40px 0 12px; }
-  .legal p { color: var(--muted); margin-bottom: 14px; }
-</style>
+<link rel="stylesheet" href="css/style.css?v=91">
+<link rel="canonical" href="https://noimadata.com/privacy.html">
+<meta name="description" content="What happens to your data when you visit the NÓIMA website or write to us.">
 </head>
-<body data-tone="a">
+<body>
 <header class="nav scrolled">
-  <a class="logo" href="index.html" aria-label="NÓIMA home"><img class="on-dark" src="assets/brand/noima-horizontal-no-tagline-bronze-white-transparent.svg" alt="NÓIMA"><img class="on-light" src="assets/brand/noima-horizontal-no-tagline-bronze-navy-transparent.svg" alt=""></a>
-  <a class="nav-cta" href="index.html">Back to the site</a>
+  <div class="wrap nav-in">
+    <a class="logo" href="index.html" aria-label="NÓIMA home"><img src="assets/brand/noima-horizontal-no-tagline-bronze-white-transparent.svg" alt="NÓIMA"></a>
+    <a class="nav-cta" href="index.html">Back to the site</a>
+  </div>
 </header>
 <main class="wrap legal">
-  <!-- DRAFT: placeholder text; to be reviewed before launch. -->
   <h1>Privacy</h1>
-  <p>This page will explain how NÓIMA handles personal data. It is a placeholder while the site is in development.</p>
+  <p>This page says what happens to your data when you visit this site or write to us.</p>
   <h2>What we collect</h2>
-  <p>This website does not use cookies, analytics or contact forms. If you email us, we use your message only to reply to you. If you switch between light and dark mode, your browser remembers that choice; it never leaves your device.</p>
-  <h2>Fonts and 3D libraries</h2>
-  <p>The site loads its fonts from Google Fonts and its 3D libraries from cdnjs and jsDelivr. These services receive your IP address when the files are requested.</p>
+  <p>This site sets no cookies and runs no analytics. There is no contact form. If you email us, we use your message only to reply to you.</p>
+  <h2>Other services</h2>
+  <p>The site is hosted on GitHub Pages. Its fonts come from Google Fonts, and the 3D model’s code from cdnjs and jsDelivr. Each receives your IP address when your browser asks for a file.</p>
   <h2>Contact</h2>
-  <p>Questions about your data: email us at the address on the home page.</p>
+  <p>Questions about your data: <a href="mailto:noimadata@gmail.com">noimadata@gmail.com</a>.</p>
 </main>
-<footer><div class="wrap"><span>© 2026 NÓIMA</span><nav><a href="index.html">Home</a></nav></div></footer>
+<footer><div class="wrap foot-in"><p class="foot-legal"><span>© 2026 NÓIMA</span><a href="index.html">Home</a></p></div></footer>
 </body>
 </html>
