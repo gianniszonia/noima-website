@@ -101,8 +101,22 @@
       // the symbol assembles, and the logo slides together, the first time its part is opened
       requestAnimationFrame(() => requestAnimationFrame(() => { $$('#sym, .join-logo', panels[k]).forEach(el => el.classList.add('in')); dispatchEvent(new Event('resize')); }));
     };
-    tabs.forEach((t, k) => t.addEventListener('click', () => pick(k)));
-    panels.forEach((p, i) => { p.inert = i !== 0; });
+    // Under 1024 px the three parts sit side by side in a strip that is swiped sideways: the titles follow the swipe,
+    // and a tap on a title slides the strip to that part.
+    const strip = $('.ns-panels', box), narrow = matchMedia('(max-width: 1023px)');
+    const mark = (k) => tabs.forEach((t, i) => { t.classList.toggle('on', i === k); t.setAttribute('aria-selected', i === k); });
+    const sync = () => { panels.forEach((p, i) => { p.inert = narrow.matches ? false : !p.classList.contains('on'); }); if (!narrow.matches) strip.scrollLeft = 0; };
+    tabs.forEach((t, k) => t.addEventListener('click', () => {
+      if (!narrow.matches) { pick(k); return; }
+      strip.scrollTo({ left: panels[k].offsetLeft - panels[0].offsetLeft, behavior: reduced ? 'auto' : 'smooth' });
+    }));
+    let queued = false;
+    strip.addEventListener('scroll', () => {
+      if (!narrow.matches || queued) return; queued = true;
+      requestAnimationFrame(() => { queued = false; const step = panels[1].offsetLeft - panels[0].offsetLeft || 1; mark(clamp(Math.round(strip.scrollLeft / step), 0, tabs.length - 1)); });
+    }, { passive: true });
+    narrow.addEventListener?.('change', () => { const k = Math.max(0, tabs.findIndex(t => t.classList.contains('on'))); pick(k); sync(); });
+    sync();
   })();
 
   /* ---------- The reading line along the top: grows from α (top of the page) to ω (the end) as you scroll ---------- */

@@ -577,6 +577,22 @@ footer a:hover { color: var(--fg); }
 @media (max-width: 479px) {
   .btn { min-height: 44px; padding: 10px 20px; font-size: 15px; }
 }
+/* Phones (under 768 px). The homepage must show both buttons without scrolling: no definition line, a slightly lower
+   model, and the two buttons smaller, side by side. */
+@media (max-width: 767px) {
+  .hero-def { display: none; }
+  .mech-box { height: clamp(180px, 30svh, 300px); }
+  .hero-sub { margin-top: 16px; }
+  .hero-actions { flex-wrap: nowrap; gap: 8px; margin-top: 24px; }
+  .hero-actions .btn { flex: 1 1 0; min-width: 0; min-height: 42px; padding: 10px 6px; font-size: 13px; letter-spacing: 0; }
+}
+/* Under 1024 px the three parts of Our name and symbol sit side by side and are changed with a sideways swipe; the
+   titles above show which one is in view (a tap on a title still goes to it). */
+@media (max-width: 1023px) {
+  .ns-panels { display: flex; gap: 28px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .ns-panels::-webkit-scrollbar { display: none; }
+  .ns-panel, .ns-panel:not(.on) { display: block; flex: 0 0 100%; min-width: 0; scroll-snap-align: start; animation: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
