@@ -688,7 +688,7 @@
     if (!dragging) { // on release: momentum carries on and fades; the model then stays where the user left it
       rotateBy(heroQ, heroSpin.x * dt, heroSpin.y * dt);
       const decay = Math.exp(-dt * 4); heroSpin.x *= decay; heroSpin.y *= decay;
-      if (resetting) { heroQ.slerp(IDENT, 1 - Math.exp(-dt * 3.8)); if (heroQ.angleTo(IDENT) < .002 && Math.abs(zoom - 1) < .003) { heroQ.identity(); zoom = zoomTarget = 1; resetting = false; } }
+      if (resetting) { heroQ.slerp(IDENT, 1 - Math.exp(-dt * 1.9)); // a calm glide back, about two seconds if (heroQ.angleTo(IDENT) < .002 && Math.abs(zoom - 1) < .003) { heroQ.identity(); zoom = zoomTarget = 1; resetting = false; } }
     }
     zoom += (zoomTarget - zoom) * (1 - Math.exp(-dt * 6));
     const k = introT < 0 ? 0 : easeOut(introT = Math.min(1, introT + dt / .9));

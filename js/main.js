@@ -537,7 +537,7 @@
   const THREE_FILES = [
     'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
     'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js',
-    'js/mechanism.js?v=43'
+    'js/mechanism.js?v=44'
   ];
   // Where the hero has the live model (from 1024 px), open the connections to the two script hosts early, so the
   // files are quick to fetch when the landing ends. Phones make no such connection until the explorer is asked for.
