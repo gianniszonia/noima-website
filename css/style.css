@@ -112,7 +112,9 @@ main > section:not(.hero):not(.contact):nth-of-type(odd)::after { background: ra
 @keyframes glowDrift { from { translate: 0 -14%; } to { translate: 0 14%; } }
 @keyframes heroOut { to { opacity: .1; translate: 0 -56px; } }
 /* the one background change on the page: the call to action and the footer sit on a darker blue (the stars still show) */
-main > section.contact { background: var(--tint-foot); }
+/* it comes in gradually: the navy deepens over the first 40% of the section, and there is no dividing line above it */
+main > section.contact { background: linear-gradient(to bottom, rgba(1, 6, 16, 0) 0%, var(--tint-foot) min(40%, 420px)); }
+main > section.contact::before { display: none; }
 
 
 
