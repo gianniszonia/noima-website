@@ -486,7 +486,7 @@ body.menu-open .nav { translate: 0 0; background: var(--navy-950); backdrop-filt
 .ns-panel:not(.on) { display: none; }
 .ns-panel.on { animation: nsIn var(--dur-4) var(--ease) both; }
 @keyframes nsIn { from { opacity: 0; translate: 0 12px; } }
-.join-logo { --lw: min(100%, 340px); width: var(--lw); margin-left: calc(var(--lw) * -.052); } /* the symbol starts on the left edge (see .logo) */
+.join-logo { --lw: min(100%, 440px); width: var(--lw); margin-left: calc(var(--lw) * -.052); } /* the symbol starts on the left edge (see .logo) */
 .join-svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--fg); shape-rendering: geometricPrecision; }
 .ns-quote { margin-top: 24px; max-width: 46ch; font-size: var(--fs-lead); line-height: 1.5; color: var(--text-2); }
 .name-explore { margin-top: 24px; }

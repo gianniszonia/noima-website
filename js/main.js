@@ -161,7 +161,7 @@
       panel.innerHTML = row ? `<b>${$('.sr-t', row).textContent}</b>${$('.sr-d', row).textContent}` : hint;
     };
 
-    // Where each line ends, in the symbol's own units: the gear's rim, the ring's upper-right dot, the Ω, the Sun.
+    // Where each line ends, in the symbol's own units: the gear's rim, the ring's upper-right dot, the ω, the Sun.
     const TARGET = { gear: [24.2, 42.8], dial: [82.3, 18.4], ao: [45.2, 92.6], sky: [97.4, 53] };
     function drawLines() {
       if (!desk.matches) { linesEl.innerHTML = ''; return; }
